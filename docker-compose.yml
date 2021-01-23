@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  db-mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=bootdb
+      - MYSQL_USER=sa
+      - MYSQL_PASSWORD=password
+      - DATABASE_HOST=%
+    ports:
+      - 3306:3306
+
+  stockmanager:
+    image: stockmanager
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db-mysql
+    ports:
+      - 8080:8080
+    environment:
+      - DATABASE_HOST=%
+      - DATABASE_USER=sa
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=bootdb
+      - DATABASE_PORT=3306
+    expose:
+      - "8080"
+    command: mvn clean spring-boot:run
